@@ -59,6 +59,23 @@ class UserControllers {
 
     return res.status(200).json(response.result)
   }
+
+  public async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body
+
+      if (!email || !password) return res.status(401).json({ msg: `Credenciais estão incorretas!` })
+
+      const user = await User.findOne({ email, password })
+
+      if (!user) return res.status(401).json({ msg: `Usuário não existe! ou Senha incorreta!` })
+
+      return res.status(200).json({ msg: `Login bem sucedido`, user })
+    } catch (e: any) {
+      console.log(e.message)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
+    }
+  }
 }
 
 export default new UserControllers()

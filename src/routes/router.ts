@@ -8,4 +8,6 @@ router.post('/', UserControllers.create)
 router.delete('/:email', UserControllers.deleteUser)
 router.put('/:id', UserControllers.updateUser)
 
+router.post('/login', UserControllers.login)
+
 export default router
