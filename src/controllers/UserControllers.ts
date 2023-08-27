@@ -33,7 +33,13 @@ class UserControllers {
       return res.status(404).json(user.existEmailMessage)
     }
 
-    return res.status(201).json({ Message: `Usuário Criado com sucesso: ${user} ` })
+    if (!user.response) {
+      return res.status(404).json(`Suas Credenciais não foram passadas corretamente!`)
+    }
+    const { name: userName, lastName: userLastName, email: userEmail } = user.response
+    return res.status(201).json({
+      Message: `Usuário Criado com sucesso: name: ${userName} - lastName: ${userLastName} -  email: ${userEmail}`,
+    })
   }
 }
 

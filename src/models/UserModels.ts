@@ -4,8 +4,8 @@ import { IUserModel } from '../schema/User'
 import User from '../schema/User'
 
 interface IUserModelsClass {
-  user?: IUserModel | undefined
-  existEmailMessage?: string | undefined
+  response?: IUserModel
+  existEmailMessage?: string
 }
 
 class UserModels {
@@ -27,10 +27,10 @@ class UserModels {
 
     const { name, lastName, email, password } = data
 
-    const user = await User.create({ name, lastName, email, password })
+    const response = await User.create({ name, lastName, email, password })
 
     return {
-      user,
+      response,
     }
   }
 }
