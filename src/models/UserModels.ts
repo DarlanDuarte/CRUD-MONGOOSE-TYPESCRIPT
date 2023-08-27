@@ -8,6 +8,10 @@ interface IUserModelsClass {
   existEmailMessage?: string
 }
 
+interface IDeleteUser {
+  email: string
+}
+
 class UserModels {
   public async create(data: {
     name: string
@@ -31,6 +35,20 @@ class UserModels {
 
     return {
       response,
+    }
+  }
+
+  public async deleteUser({ email }) {
+    const user = await User.exists({ email })
+
+    if (!user) return { message: `Usuário não existe!` }
+
+    const result = await User.deleteOne({ email })
+
+    console.log(result)
+
+    return {
+      result,
     }
   }
 }

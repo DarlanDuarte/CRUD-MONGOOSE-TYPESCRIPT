@@ -3,43 +3,49 @@ import User from '../schema/User'
 import UserModels from '../models/UserModels'
 import { IUserModel } from '../schema/User'
 
-interface IcreatedUser {
-  user: {
-    name: string
-    lastName: string
-    email: string
-    password: string
-  }
-}
-
 class UserControllers {
-  public async getUser(req: Request, res: Response) {
+  public async getUsers(req: Request, res: Response) {
     const users = await User.find()
 
     return res.status(200).json(users)
   }
 
   public async create(req: Request, res: Response): Promise<Response> {
-    const { name, lastName, email, password } = req.body
+    try {
+      const { name, lastName, email, password } = req.body
 
-    const user = await UserModels.create({
-      name,
-      lastName,
-      email,
-      password,
-    })
+      const user = await UserModels.create({
+        name,
+        lastName,
+        email,
+        password,
+      })
 
-    if (user.existEmailMessage) {
-      return res.status(404).json(user.existEmailMessage)
+      if (user.existEmailMessage) {
+        return res.status(404).json(user.existEmailMessage)
+      }
+
+      if (!user.response) {
+        return res.status(404).json(`Suas Credenciais não foram passadas corretamente!`)
+      }
+      const { name: userName, lastName: userLastName, email: userEmail } = user.response
+      return res.status(201).json({
+        Message: `Usuário Criado com sucesso: name: ${userName} - lastName: ${userLastName} -  email: ${userEmail}`,
+      })
+    } catch (e: any) {
+      console.log(e.message)
+      return res.status(500).json({ error: 'Erro interno do servidor' })
     }
+  }
 
-    if (!user.response) {
-      return res.status(404).json(`Suas Credenciais não foram passadas corretamente!`)
-    }
-    const { name: userName, lastName: userLastName, email: userEmail } = user.response
-    return res.status(201).json({
-      Message: `Usuário Criado com sucesso: name: ${userName} - lastName: ${userLastName} -  email: ${userEmail}`,
-    })
+  public async deleteUser(req: Request, res: Response) {
+    const { email } = req.params
+
+    const response = await UserModels.deleteUser({ email })
+
+    if (response.message) return res.status(400).json(response.message)
+
+    return res.status(200).json({ mensagem: `Usuário deletado com sucesso!`, resposta: response.result?.acknowledged })
   }
 }
 
