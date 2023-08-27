@@ -51,6 +51,25 @@ class UserModels {
       result,
     }
   }
+
+  public async updateUser({ id, email, password }) {
+    try {
+      const user = await User.exists({ _id: id })
+
+      if (!user) return { msg: `Usuário não existe!` }
+
+      const result = await User.findByIdAndUpdate(id, { email, password })
+
+      console.log(result)
+
+      return {
+        result,
+      }
+    } catch (e: any) {
+      console.log(e.message)
+      return { msgError: `Error ao atualizar usuário!` }
+    }
+  }
 }
 
 export default new UserModels()

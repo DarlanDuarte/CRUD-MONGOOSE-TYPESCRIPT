@@ -47,6 +47,18 @@ class UserControllers {
 
     return res.status(200).json({ mensagem: `Usuário deletado com sucesso!`, resposta: response.result?.acknowledged })
   }
+
+  public async updateUser(req: Request, res: Response) {
+    const { email, password } = req.body
+    const { id } = req.params
+
+    const response = await UserModels.updateUser({ id, email, password })
+
+    if (response.msg) return res.status(400).json(response.msg)
+    if (response.msgError) return res.status(400).json(response.msgError)
+
+    return res.status(200).json(response.result)
+  }
 }
 
 export default new UserControllers()
